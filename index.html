@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Wish | 7-Stage Edition</title>
+    
+    <!-- Fonts & Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Dancing+Script:wght@700&family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --bg-base: #06020e;
+            --bg-deep: #120624;
+            --rg-main: #e0a96d;
+            --rg-light: #f7d794;
+            --rg-glow: rgba(224, 169, 109, 0.4);
+            --glass-border: rgba(247, 215, 148, 0.25);
+            --font-bn: 'Hind Siliguri', sans-serif;
+            --font-en: 'Orbitron', sans-serif;
+            --font-title: 'Cinzel', serif;
+            --font-script: 'Dancing Script', cursive;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { font-family: var(--font-bn); color: #fff; background: var(--bg-base); height: 100vh; width: 100vw; overflow: hidden; user-select: none; perspective: 1200px; }
+
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-top: 1px solid rgba(255,255,255,0.4);
+            border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.85);
+        }
+
+        .btn-rg {
+            background: linear-gradient(135deg, rgba(224,169,109,0.15), rgba(0,0,0,0.8));
+            border: 1.5px solid var(--rg-main); color: var(--rg-light);
+            padding: 13px 32px; border-radius: 40px; font-family: var(--font-en); font-size: 13px; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.25s ease;
+            box-shadow: 0 0 20px rgba(224,169,109,0.2); position: relative; z-index: 10;
+        }
+        .btn-rg:active { transform: scale(0.92); background: var(--rg-main); color: #000; box-shadow: 0 0 30px var(--rg-main); }
+
+        /* DASHBOARD */
+        #dashboard { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; background: radial-gradient(circle at 50% 20%, var(--bg-deep) 0%, var(--bg-base) 100%); overflow-y: auto; padding: 25px 15px; display: flex; justify-content: center; }
+        .dash-wrap { width: 100%; max-width: 600px; padding-bottom: 70px; }
+        .dash-head { text-align: center; margin-bottom: 25px; }
+        .dash-head h1 { font-family: var(--font-title); color: var(--rg-light); font-size: 24px; letter-spacing: 3px; }
+        .dash-sec { background: rgba(255,255,255,0.03); border: 1px solid rgba(224,169,109,0.2); padding: 18px; border-radius: 16px; margin-bottom: 18px; }
+        .dash-sec h3 { font-family: var(--font-en); font-size: 14px; color: var(--rg-main); margin-bottom: 12px; border-bottom: 1px dashed rgba(224,169,109,0.3); padding-bottom: 6px; }
+        .inp-grp { margin-bottom: 12px; }
+        .inp-grp label { display: block; font-size: 13px; color: #ddd; margin-bottom: 5px; }
+        .inp-grp input, .inp-grp textarea { width: 100%; padding: 11px; background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 8px; font-family: inherit; font-size: 14px; }
+
+        /* EXPERIENCE ENGINE */
+        #experience { display: none; width: 100%; height: 100%; position: relative; overflow: hidden; background: radial-gradient(circle at 50% 40%, var(--bg-deep) 0%, var(--bg-base) 100%); }
+        #canvasEngine { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        
+        .stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); z-index: 10; padding: 20px; transform: scale(0.92); }
+        .stage.active { opacity: 1; pointer-events: all; transform: scale(1); }
+        .stage-title { font-family: var(--font-title); font-size: 20px; color: var(--rg-light); margin-bottom: 22px; text-align: center; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 15px var(--rg-glow); }
+
+        /* STAGE 1: ORB PORTAL */
+        .portal-orb { width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, rgba(247,215,148,0.4), rgba(168,85,247,0.2) 60%, rgba(0,0,0,0.95)); border: 2px solid var(--rg-main); display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 0 35px var(--rg-glow); animation: orbFloat 3s infinite ease-in-out alternate; font-size: 32px; }
+        @keyframes orbFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+
+        /* STAGE 2: PROFILE SPOTLIGHT */
+        .profile-card { width: 290px; padding: 25px 20px; text-align: center; border-radius: 22px; }
+        .profile-card img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 3px solid var(--rg-main); margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
+
+        /* STAGE 3: MEMORY BUBBLES (NEW) */
+        .bubble-deck { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 340px; }
+        .bubble-item { background: rgba(255,255,255,0.04); border: 1px solid var(--rg-main); padding: 14px 18px; border-radius: 16px; font-size: 14px; cursor: pointer; text-align: center; transition: all 0.3s; }
+
+        /* STAGE 4: CARDS OF APPRECIATION */
+        .appr-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 340px; }
+        .appr-card { height: 85px; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .appr-card.flipped { transform: rotateY(180deg); }
+        .appr-f, .appr-b { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 14px; display: flex; justify-content: center; align-items: center; padding: 15px; text-align: center; border: 1px solid var(--rg-main); }
+        .appr-f { background: rgba(255,255,255,0.04); font-size: 15px; color: var(--rg-light); font-weight: 600; }
+        .appr-b { background: linear-gradient(135deg, rgba(224,169,109,0.2), rgba(0,0,0,0.95)); transform: rotateY(180deg); font-size: 13.5px; line-height: 1.5; color: #fff; }
+
+        /* STAGE 5: COUPONS (NEW) */
+        .coupon-deck { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 340px; }
+        .coupon-item { position: relative; height: 75px; border-radius: 12px; overflow: hidden; border: 1px solid var(--rg-main); }
+        .coupon-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(224,169,109,0.2), rgba(0,0,0,0.95)); padding: 10px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 13px; font-weight: 600; }
+        .coupon-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; cursor: pointer; }
+
+        /* STAGE 6: CAKE & LANTERNS */
+        .cake-node { font-size: 85px; cursor: pointer; transition: transform 0.3s; filter: drop-shadow(0 15px 25px var(--rg-glow)); }
+
+        /* STAGE 7: FINAL CARD */
+        .letter-paper { width: 95%; max-width: 420px; max-height: 58vh; overflow-y: auto; background: linear-gradient(to bottom, #fff8e8, #f5ebd5); color: #1f1f1f; padding: 25px 20px; border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); font-family: var(--font-script); font-size: 22px; line-height: 1.8; text-align: left; border-left: 5px solid var(--rg-main); }
+    </style>
+</head>
+<body>
+
+    <!-- 1. DASHBOARD -->
+    <div id="dashboard">
+        <div class="dash-wrap">
+            <div class="dash-head">
+                <h1>A SPECIAL WISH</h1>
+                <p style="font-size:13px; color:#aaa;">7-Stage Complete Experience Engine</p>
+            </div>
+
+            <div class="dash-sec">
+                <h3>👤 1. নামের তথ্য ও ছবি</h3>
+                <div style="display:flex; gap:10px;">
+                    <div class="inp-grp" style="flex:1;"><label>আপনার নাম (Sender)</label><input type="text" id="inSn" value="আপনার নাম"></div>
+                    <div class="inp-grp" style="flex:1;"><label>তার নাম (Friend)</label><input type="text" id="inRn" value="বন্ধুর নাম"></div>
+                </div>
+                <div class="inp-grp"><label>তার ছবির ডিরেক্ট URL (Profile Picture)</label><input type="text" id="inI1" placeholder="https://..."></div>
+                <div class="inp-grp"><label>অডিও ব্যাকগ্রাউন্ড URL (Optional MP3)</label><input type="text" id="inAu" placeholder="https://..."></div>
+            </div>
+
+            <div class="dash-sec">
+                <h3>✨ 2. সূচনা ও স্পটলাইট (Stage 1 & 2)</h3>
+                <div class="inp-grp"><label>ওয়েলকাম সাবটাইটেল</label><input type="text" id="inP1Sub" value="কিছু উপস্থিতি খুব নীরব, কিন্তু বেশ সুন্দর..."></div>
+                <div class="inp-grp"><label>ছবির নিচের বিশেষ প্রশংসা</label><input type="text" id="inP2Sub" value="মানুষটা হয়তো খুব সাধারণ, কিন্তু বন্ধু হিসেবে ওর মনটা সত্যি দারুণ খাঁটি!"></div>
+            </div>
+
+            <div class="dash-sec">
+                <h3>🎈 3. মেমোরি বাবলস (Stage 3 - NEW)</h3>
+                <div class="inp-grp"><label>মেমোরি ১</label><input type="text" class="in-bub" value="অহেতুক কোনো কারণ ছাড়াই হুটহাট হাই-হ্যালো টেক্সট।"></div>
+                <div class="inp-grp"><label>মেমোরি ২</label><input type="text" class="in-bub" value="বেশি কথা না হলেও দূরত্বটা কখনোই অনুভূতি কমাতে পারে না।"></div>
+                <div class="inp-grp"><label>মেমোরি ৩</label><input type="text" class="in-bub" value="যেকোনো ছোট আড্ডাতেও তোর সুন্দর পজিটিভ ভাইব।"></div>
+            </div>
+
+            <div class="dash-sec">
+                <h3>🎭 4. ব্যক্তিত্বের ৩টি কার্ড (Stage 4)</h3>
+                <div class="inp-grp"><label>কার্ড ১ (সহজ-সরলতা)</label><input type="text" class="in-card" value="অহেতুক কোনো মেকি ভাব নেই—মানুষটা যেমন, ঠিক তেমনই সহজ-সরল।"></div>
+                <div class="inp-grp"><label>কার্ড ২ (ভরসা)</label><input type="text" class="in-card" value="বিপদে বা দরকারে কোনো শো-অফ ছাড়াই নিঃশব্দে পাশে থাকার মতো একটা মানুষ।"></div>
+                <div class="inp-grp"><label>কার্ড ৩ (ইতিবাচক পরিবেশ)</label><input type="text" class="in-card" value="বেশি কথা না হলেও, তোর সাথে যেকোনো আড্ডা সবসময় সুন্দর লাগে।"></div>
+            </div>
+
+            <div class="dash-sec">
+                <h3>🎟️ 5. ফ্রেন্ডশিপ কুপন (Stage 5 - NEW)</h3>
+                <div class="inp-grp"><label>কুপন ১</label><input type="text" class="in-coup" value="🍲 যেকোনো দিন ট্রিট আদায়ের স্পেশাল ভাউচার!"></div>
+                <div class="inp-grp"><label>কুপন ২</label><input type="text" class="in-coup" value="🏆 যেকোনো ছোট তর্কে বিনা যুক্তিতে সরাসরি জিতে যাওয়ার পাস!"></div>
+            </div>
+
+            <div class="dash-sec">
+                <h3>💌 6. মূল চিঠি (Stage 7)</h3>
+                <div class="inp-grp"><label>আপনার নিজের ভাষায় সাজিয়ে লিখুন (তুই/তুমি/আপনি কাস্টমাইজযোগ্য)</label>
+                <textarea id="inLetter" rows="6">কখনও হয়তো সামনাসামনি গুছিয়ে বলা হয় না, কিন্তু আজকের দিনটায় কোনো মেকি ভাব ছাড়া বলছি...
+
+তোর সাথে হয়তো প্রতিদিনের হাজারটা স্মৃতির ফোল্ডার নেই, কিন্তু বন্ধু হিসেবে তোর প্রতি শ্রদ্ধা আর শুভকামনাটা একদম খাঁটি। 
+
+জীবনের প্রতিটি পদক্ষেপে অনেক দূর এগিয়ে যা, সবসময় অনেক ভালো থাকিস আর হাসিখুশি থাকিস।
+
+Happy Birthday! ✨
+— তোর বান্ধবী</textarea></div>
+            </div>
+
+            <button class="btn-rg" style="width:100%; background:var(--rg-main); color:#000; font-size:15px; margin-top:10px;" onclick="directPreview()">⚡ Launch 7-Stage Experience</button>
+        </div>
+    </div>
+
+    <!-- 2. EXPERIENCE ENGINE -->
+    <div id="experience">
+        <audio id="bgMusic" loop preload="auto"></audio>
+        <canvas id="canvasEngine"></canvas>
+
+        <!-- STAGE 1: PORTAL -->
+        <div class="stage active" id="stage1">
+            <h2 class="stage-title">A SPECIAL WISH</h2>
+            <div class="portal-orb" onclick="startExperience()">✨</div>
+            <p id="st1Sub" style="margin-top:35px; color:#bbb; font-size:13px; text-align:center; max-width:280px;"></p>
+        </div>
+
+        <!-- STAGE 2: PROFILE SPOTLIGHT -->
+        <div class="stage" id="stage2">
+            <div class="profile-card glass-panel">
+                <img id="pImg" src="">
+                <h2 id="pName" style="color:var(--rg-light); font-size:20px; font-family:var(--font-title);"></h2>
+                <p id="st2Sub" style="margin-top:10px; color:#ddd; font-size:13.5px; line-height:1.5;"></p>
+            </div>
+            <button class="btn-rg" style="margin-top:35px;" onclick="nextStage(3)">Pop Bubbles ➔</button>
+        </div>
+
+        <!-- STAGE 3: MEMORY BUBBLES -->
+        <div class="stage" id="stage3">
+            <div class="stage-title">MEMORY BUBBLES</div>
+            <p style="color:#aaa; font-size:13px; margin-bottom:18px;">Tap bubbles to decrypt... ✨</p>
+            <div class="bubble-deck" id="bubbleDeck"></div>
+            <button class="btn-rg" id="btnS3" style="display:none; margin-top:30px;" onclick="nextStage(4)">Unfold Cards ➔</button>
+        </div>
+
+        <!-- STAGE 4: APPRECIATION CARDS -->
+        <div class="stage" id="stage4">
+            <div class="stage-title">QUALITIES THAT MATTER</div>
+            <p style="color:#aaa; font-size:13px; margin-bottom:18px;">Tap each card to reveal... ✨</p>
+            <div class="appr-grid" id="apprDeck"></div>
+            <button class="btn-rg" id="btnS4" style="display:none; margin-top:30px;" onclick="nextStage(5)">Scratch Coupons ➔</button>
+        </div>
+
+        <!-- STAGE 5: COUPONS -->
+        <div class="stage" id="stage5">
+            <div class="stage-title">FRIENDSHIP VOUCHERS</div>
+            <p style="color:#aaa; font-size:13px; margin-bottom:18px;">Scratch to reveal vouchers...</p>
+            <div class="coupon-deck" id="couponDeck"></div>
+            <button class="btn-rg" id="btnS5" style="display:none; margin-top:25px;" onclick="nextStage(6)">Make A Wish ➔</button>
+        </div>
+
+        <!-- STAGE 6: CAKE & WISH -->
+        <div class="stage" id="stage6">
+            <div class="stage-title">MAKE A WISH</div>
+            <div class="cake-node" id="cakeNode" onclick="blowCandle()">🎂🕯️</div>
+            <p id="cakeStatus" style="color:var(--rg-light); margin-top:20px; font-weight:600; font-size:14px;">Tap the cake to blow the candle...</p>
+            <button class="btn-rg" id="btnS6" style="display:none; margin-top:30px;" onclick="nextStage(7)">Read The Letter ➔</button>
+        </div>
+
+        <!-- STAGE 7: FINAL LETTER CARD -->
+        <div class="stage" id="stage7">
+            <div class="letter-paper" id="letterPaper"></div>
+            <button class="btn-rg" style="margin-top:25px;" onclick="saveCardImage()">📥 Save Memory</button>
+            <p style="margin-top:15px; color:#666; font-family:var(--font-en); font-size:11px; letter-spacing:2px;">BEYOND THE SCREEN</p>
+        </div>
+    </div>
+
+    <!-- 3. JAVASCRIPT ENGINE -->
+    <script>
+        let DATA = {};
+
+        function extractForm() {
+            let bubs = [], cards = [], coups = [];
+            document.querySelectorAll('.in-bub').forEach(e => bubs.push(e.value));
+            document.querySelectorAll('.in-card').forEach(e => cards.push(e.value));
+            document.querySelectorAll('.in-coup').forEach(e => coups.push(e.value));
+
+            return {
+                sn: document.getElementById('inSn').value,
+                rn: document.getElementById('inRn').value,
+                i1: document.getElementById('inI1').value || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400",
+                au: document.getElementById('inAu').value,
+                p1Sub: document.getElementById('inP1Sub').value,
+                p2Sub: document.getElementById('inP2Sub').value,
+                bubs: bubs, cards: cards, coups: coups,
+                lt: document.getElementById('inLetter').value
+            };
+        }
+
+        function haptic(ms = [35]) { if(navigator.vibrate) navigator.vibrate(ms); }
+
+        function directPreview() {
+            DATA = extractForm();
+            document.getElementById('dashboard').style.display = 'none';
+            initEngine();
+        }
+
+        function initEngine() {
+            document.getElementById('experience').style.display = 'block';
+            if(DATA.au) document.getElementById('bgMusic').src = DATA.au;
+
+            document.getElementById('st1Sub').innerText = DATA.p1Sub;
+            document.getElementById('pImg').src = DATA.i1;
+            document.getElementById('pName').innerText = DATA.rn;
+            document.getElementById('st2Sub').innerText = DATA.p2Sub;
+
+            // Memory Bubbles
+            const bDeck = document.getElementById('bubbleDeck'); bDeck.innerHTML = '';
+            let bubsDone = 0;
+            DATA.bubs.forEach((txt, i) => {
+                const b = document.createElement('div'); b.className = 'bubble-item'; b.innerText = "✨ Tap to unlock memory...";
+                b.onclick = () => {
+                    if(b.innerText.includes("Tap")) {
+                        b.innerText = txt; b.style.borderColor = 'var(--rg-light)'; haptic(); bubsDone++;
+                        if(bubsDone === DATA.bubs.length) setTimeout(() => document.getElementById('btnS3').style.display = 'block', 400);
+                    }
+                };
+                bDeck.appendChild(b);
+            });
+
+            // Appreciation Cards
+            const aDeck = document.getElementById('apprDeck'); aDeck.innerHTML = '';
+            let cardsDone = 0;
+            DATA.cards.forEach((txt, i) => {
+                const c = document.createElement('div'); c.className = 'appr-card';
+                c.innerHTML = `<div class="appr-f">✨ Card 0${i+1}</div><div class="appr-b">${txt}</div>`;
+                c.onclick = () => {
+                    if(!c.classList.contains('flipped')) {
+                        c.classList.add('flipped'); haptic(); cardsDone++;
+                        if(cardsDone === DATA.cards.length) setTimeout(() => document.getElementById('btnS4').style.display = 'block', 500);
+                    }
+                };
+                aDeck.appendChild(c);
+            });
+
+            // Coupons
+            buildCoupons();
+            initCanvas();
+        }
+
+        let couponsDone = 0;
+        function buildCoupons() {
+            const deck = document.getElementById('couponDeck'); deck.innerHTML = '';
+            DATA.coups.forEach((text, i) => {
+                const item = document.createElement('div'); item.className = 'coupon-item';
+                item.innerHTML = `<div class="coupon-content">${text}</div><canvas class="coupon-canvas" id="cvC${i}"></canvas>`;
+                deck.appendChild(item);
+
+                setTimeout(() => {
+                    const cvs = document.getElementById('cvC'+i);
+                    cvs.width = item.clientWidth; cvs.height = item.clientHeight;
+                    const ctx = cvs.getContext('2d');
+                    ctx.fillStyle = '#3a1f0a'; ctx.fillRect(0,0,cvs.width,cvs.height);
+                    ctx.fillStyle = '#e0a96d'; ctx.font = 'bold 11px Orbitron'; ctx.textAlign = 'center';
+                    ctx.fillText('SCRATCH TO REVEAL 🎟️', cvs.width/2, cvs.height/2 + 4);
+
+                    let scratched = 0;
+                    const wipe = (e) => {
+                        const r = cvs.getBoundingClientRect();
+                        const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+                        const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+                        ctx.globalCompositeOperation = 'destination-out';
+                        ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI*2); ctx.fill();
+                        scratched++;
+                        if(scratched > 15 && !item.classList.contains('done')) {
+                            item.classList.add('done'); couponsDone++; haptic();
+                            if(couponsDone === DATA.coups.length) setTimeout(() => document.getElementById('btnS5').style.display = 'block', 600);
+                        }
+                    };
+                    cvs.addEventListener('mousemove', wipe); cvs.addEventListener('touchmove', wipe);
+                }, 100);
+            });
+        }
+
+        function nextStage(n) {
+            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+            document.getElementById('stage' + n).classList.add('active');
+            if(n === 6) canvasMode = 'lanterns';
+            if(n === 7) renderTypewriter();
+        }
+
+        function startExperience() {
+            haptic([50]);
+            if(DATA.au) { document.getElementById('bgMusic').volume = 0.5; document.getElementById('bgMusic').play().catch(()=>{}); }
+            createSparkBurst(window.innerWidth/2, window.innerHeight/2, '#f7d794', 30);
+            setTimeout(() => nextStage(2), 600);
+        }
+
+        function blowCandle() {
+            haptic([50]);
+            document.getElementById('cakeNode').innerHTML = "🎂✨";
+            document.getElementById('cakeStatus').innerText = "Wishes released into the night sky...";
+            document.getElementById('btnS6').style.display = 'block';
+            createSparkBurst(window.innerWidth/2, window.innerHeight/2, '#e0a96d', 35);
+        }
+
+        let lPos = 0;
+        function renderTypewriter() {
+            const paper = document.getElementById('letterPaper');
+            paper.innerHTML = ''; lPos = 0;
+            function type() {
+                if(lPos < DATA.lt.length) {
+                    let char = DATA.lt.charAt(lPos);
+                    paper.innerHTML += (char === '\n' ? '<br>' : char); lPos++;
+                    paper.scrollTop = paper.scrollHeight;
+                    setTimeout(type, 35);
+                }
+            }
+            type();
+        }
+
+        function saveCardImage() {
+            const paper = document.getElementById('letterPaper');
+            html2canvas(paper, { scale: 2, backgroundColor: '#06020e' }).then(cvs => {
+                let a = document.createElement('a'); a.download = 'Special-Wish-Memory.png'; a.href = cvs.toDataURL(); a.click();
+            });
+        }
+
+        // Canvas Engine
+        let cEngine, ctx, particles = [], lanterns = [], canvasMode = 'dust';
+        function initCanvas() {
+            cEngine = document.getElementById('canvasEngine'); ctx = cEngine.getContext('2d');
+            cEngine.width = window.innerWidth; cEngine.height = window.innerHeight;
+            for(let i=0; i<35; i++) particles.push({ x: Math.random()*cEngine.width, y: Math.random()*cEngine.height, r: Math.random()*1.8, vy: -Math.random()*0.5-0.2, a: Math.random() });
+            for(let i=0; i<15; i++) lanterns.push({ x: Math.random()*cEngine.width, y: cEngine.height + Math.random()*200, vy: Math.random()*0.8+0.5, size: Math.random()*12+10 });
+            loopCanvas();
+        }
+        function createSparkBurst(x, y, color, count) {
+            for(let i=0; i<count; i++) particles.push({ x: x, y: y, color: color, vx: (Math.random()-0.5)*8, vy: (Math.random()-0.5)*8, life: 1, dynamic: true });
+        }
+        function loopCanvas() {
+            ctx.clearRect(0, 0, cEngine.width, cEngine.height);
+            if(canvasMode === 'lanterns') {
+                lanterns.forEach(l => {
+                    ctx.fillStyle = 'rgba(247, 215, 148, 0.7)';
+                    ctx.beginPath(); ctx.arc(l.x, l.y, l.size, 0, Math.PI*2); ctx.fill();
+                    l.y -= l.vy; if(l.y < -30) l.y = cEngine.height + 50;
+                });
+            }
+            for(let i=0; i<particles.length; i++) {
+                let p = particles[i];
+                if(p.dynamic) {
+                    p.x += p.vx; p.y += p.vy; p.life -= 0.03;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 2.5, 0, Math.PI*2); ctx.fillStyle = p.color; ctx.globalAlpha = p.life; ctx.fill();
+                    if(p.life <= 0) { particles.splice(i, 1); i--; }
+                } else {
+                    p.y += p.vy; if(p.y < 0) p.y = cEngine.height;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fillStyle = '#f7d794'; ctx.globalAlpha = p.a; ctx.fill();
+                }
+            }
+            ctx.globalAlpha = 1;
+            requestAnimationFrame(loopCanvas);
+        }
+    </script>
+</body>
+</html>
